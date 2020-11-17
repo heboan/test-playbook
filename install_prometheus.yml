@@ -1,0 +1,13 @@
+---
+
+- name: install prometheus
+  hosts: "{{ host_list }}"
+  gather_facts: True
+  roles:
+  - role: install_prometheus
+
+
+#ansible-playbook -i hosts install_zookeeper.yml -e "host_list=192.168.88.1" -k
+##注意事项
+##1、执行ansible命令的用户在远程机必须能够免密sudo
+##2、执行之前根据实际需求更改role/install_prometheus/defaults/main.yml

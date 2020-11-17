@@ -1,0 +1,6 @@
+---
+
+file_server: "http://192.168.88.1:8000"
+jdk_type: "tgz"
+jdk_pkg: "jdk-8u101-linux-x64.tar.gz"
+jdk_version: "jdk1.8.0_101"

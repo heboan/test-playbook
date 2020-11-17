@@ -1,0 +1,50 @@
+---
+- name: make sure /usr/java exists
+  file:
+    path: /usr/java
+    state: directory
+  become: yes
+  become_method: sudo
+
+
+- name: install rpm jdk
+  yum:
+    name: "{{file_server}}/{{ jdk_pkg }}"
+    state: present
+  when: jdk_type == "rpm"
+  register: result
+  until: result|succeeded
+  delay: 5
+  retries: 2
+  become: yes
+  become_method: sudo
+
+
+- name: install tgz jdk
+  unarchive:
+    src: "{{file_server}}/{{ jdk_pkg }}"
+    dest: "/usr/java/"
+    remote_src: yes
+  when: jdk_type == "tgz"
+  become: yes
+  become_method: sudo
+
+
+- name: create jdk link
+  file:
+    src: "/usr/java/{{ jdk_version }}"
+    dest: /usr/java/jdk
+    state: link
+  when: jdk_type == "tgz"
+  become: yes
+  become_method: sudo
+
+
+- name: copy jdk profile file
+  template:
+    src: jdk.sh
+    dest: /etc/profile.d/jdk.sh
+  when: jdk_type == "tgz"
+  become: yes
+  become_method: sudo
+  

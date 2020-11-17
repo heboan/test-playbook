@@ -1,0 +1,63 @@
+---
+
+- name: download and unarchive kafka pkg
+  unarchive:
+    src: "{{file_server}}/{{ kafka_pkg }}"
+    dest: "{{ deployment_dir }}"
+    remote_src: yes
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  become: yes
+  become_method: sudo
+
+
+- name: create kafka soft link
+  file:
+    src: "{{ deployment_dir }}/{{ kafka_version }}"
+    dest: "{{ deployment_dir }}/kafka"
+    state: link
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  become: yes
+  become_method: sudo
+
+
+- name: make sure kafka data and log directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+    mode: 0755
+  with_items:
+    - "{{ kafka_data_dir }}"
+    - "{{ kafka_log_dir }}"
+  become: yes
+  become_method: sudo
+
+
+- name: generate server.properties
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0644
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  with_items:
+    - {"src": "server.properties", "dest": "{{ deployment_dir }}/kafka/config/server.properties"}
+  become: yes
+  become_method: sudo
+
+
+- name: generate init.kafka.sh and start.sh
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0755
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  with_items:
+    - {"src": "init.kafka.sh", "dest": "{{ deployment_dir }}/kafka/init.kafka.sh"}
+    - {"src": "start.sh", "dest": "{{ deployment_dir }}/kafka/bin/start.sh"}
+  become: yes
+  become_method: sudo

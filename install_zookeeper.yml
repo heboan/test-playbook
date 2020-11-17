@@ -1,0 +1,15 @@
+---
+
+- name: install zookeeper
+  hosts: "{{ host_list }}"
+  gather_facts: False
+  roles:
+  - role: install_zookeeper
+
+
+#ansible-playbook -i hosts install_zookeeper.yml -e "host_list=192.168.88.1, node_id=1" -k
+#注意事项
+#1、执行ansible命令的用户在远程机必须能够免密sudo
+#2、执行之前根据实际需求更改role/install_zookeeper/defaults/main.yml
+#3、执行之前根据实际需求更改role/install_zookeeper/templates/zoo.cfg
+#4、如host_list=192.168.88.1, node_id=1 这里的ip和id一定要对应，因为在配置文件已经定义好了

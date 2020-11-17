@@ -1,0 +1,62 @@
+---
+
+- name: download and unarchive prometheus pkg
+  unarchive:
+    src: "{{file_server}}/{{ prometheus_pkg }}"
+    dest: "{{ deployment_dir }}"
+    remote_src: yes
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  become: yes
+  become_method: sudo
+
+
+- name: create prometheus soft link
+  file:
+    src: "{{ deployment_dir }}/{{ prometheus_version }}"
+    dest: "{{ deployment_dir }}/prometheus"
+    state: link
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  become: yes
+  become_method: sudo
+
+
+- name: make sure prometheus data and log directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+    mode: 0755
+  with_items:
+    - "{{ prometheus_data_dir }}"
+    - "{{ prometheus_log_dir }}"
+  become: yes
+  become_method: sudo
+
+
+- name: generate prometheus.yml
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0644
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  with_items:
+    - {"src": "prometheus.yml", "dest": "{{ deployment_dir }}/prometheus/prometheus.yml"}
+  become: yes
+  become_method: sudo
+
+
+- name: generate init.prometheus.sh
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0755
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  with_items:
+    - {"src": "init.prometheus.sh", "dest": "{{ deployment_dir }}/prometheus/init.prometheus.sh"}
+  become: yes
+  become_method: sudo

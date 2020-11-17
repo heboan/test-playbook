@@ -1,0 +1,111 @@
+#!/bin/sh
+# zookeeper init script
+#
+# heboan@qq.com 2020-11-10
+
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+NAME=zookeeper
+
+RTDIR=`cd $(dirname $0);pwd`
+DAEMON=$RTDIR/bin/zkServer.sh
+
+test -x $DAEMON || exit 0
+
+export JAVA_HOME={{ JAVA_HOME }}
+export PATH=$JAVA_HOME/bin:$PATH
+
+ulimit -n 65535
+
+# get port
+PORT=`cat "$RTDIR/conf/zoo.cfg" | grep clientPort | sed -e 's/clientPort=//'`
+
+# zoo log dir
+export ZOO_LOG_DIR={{ zookeeper_log_dir }}
+export ZOOPIDFILE={{ zookeeper_data_dir }}/zk.pid
+PIDFILE=$ZOOPIDFILE
+
+get_zk_pid() {
+    pid=0
+    [ `ps aux|grep $RTDIR|grep -v grep|wc -l` -gt 0 ] && {
+       pid=`ps aux|grep $RTDIR|grep -v grep| awk '{ print $2 }'`
+    }
+    echo $pid
+}
+
+is_running() {
+    [ `ps aux|grep $RTDIR|grep -v grep|wc -l` -gt 0 ] && return 0
+    # [ $(get_zk_pid) -gt 0 ] && return 0
+    return 1
+}
+
+
+wait_pid_exit() {
+  pid=$1
+  count=0
+  MAX_WAIT=180
+  until [ `ps aux|grep $RTDIR|grep -v grep|wc -l` = "0" ] || [ $count -gt $MAX_WAIT ]
+  do
+    echo -n "."
+    sleep 1
+    count=`expr $count + 1`
+  done
+
+  if [ $count -gt $MAX_WAIT ]; then
+    echo "timeout then kill"
+    kill -9 $pid  2>/dev/null
+  fi
+}
+
+
+do_start() {
+    su {{ run_user }} -s /bin/sh -c "$DAEMON start"
+    sleep 1
+    is_running && return 0
+    return 1
+}
+
+do_stop() {
+    is_running && { pid=$(get_zk_pid); kill $pid; }
+    sleep 1
+    pid=$(get_zk_pid)
+    wait_pid_exit $pid
+    return 0
+}
+
+do_restart() {
+    is_running && do_stop
+    do_start || return 2
+    return 0
+}
+
+case "$1" in
+    start)
+        is_running && { echo "$NAME is already running."; exit 0; }
+        echo "Starting $NAME (port=$PORT)..."
+        do_start || { echo "!!! failed to start."; exit 2; }
+        echo "started."
+        ;;
+    stop)
+        is_running || { echo "$NAME isn't running."; exit 0; }
+        echo -n "Stopping $NAME (port=$PORT)..."
+        do_stop
+        echo "done"
+        ;;
+    restart)
+        echo "Restarting $NAME (port=$PORT)..."
+        do_restart || { echo "failed to restart."; exit 2; }
+        echo "restarted"
+        ;;
+    status)
+        if is_running; then
+            echo "$NAME is runing (pid=$(get_zk_pid))"
+        else
+            echo "$NAME isn't running"
+        fi
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status|restart}"
+        exit 2
+esac
+

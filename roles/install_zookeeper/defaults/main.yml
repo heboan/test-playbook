@@ -1,0 +1,18 @@
+---
+
+file_server: "http://192.168.88.1:8000"
+zookeeper_pkg: "apache-zookeeper-3.6.2-bin.tar.gz"
+zookeeper_version: "apache-zookeeper-3.6.2-bin"
+
+deployment_dir: "/opt"
+zookeeper_log_dir: "/data/log-center/zookeeper"
+zookeeper_data_dir: "/data/var/zookeeper"
+node_id: "1"
+
+run_user: "ppops"
+run_usergroup: "ppops"
+
+JAVA_HOME: "/usr/java/jdk"
+
+nodes: ["192.168.88.1", "192.168.88.2", "192.168.88.3"]
+

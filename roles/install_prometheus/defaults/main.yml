@@ -1,0 +1,13 @@
+---
+
+file_server: "http://192.168.88.1:8000"
+prometheus_pkg: "prometheus-2.22.1.linux-amd64.tar.gz"
+prometheus_version: "prometheus-2.22.1.linux-amd64"
+
+deployment_dir: "/opt"
+prometheus_log_dir: "/data/log-center/prometheus"
+prometheus_data_dir: "/data/var/prometheus"
+
+run_user: "ppops"
+run_usergroup: "ppops"
+

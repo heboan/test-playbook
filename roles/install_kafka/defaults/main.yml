@@ -1,0 +1,19 @@
+---
+
+file_server: "http://192.168.88.1:8000"
+kafka_pkg: "kafka_2.12-2.6.0.tgz"
+kafka_version: "kafka_2.12-2.6.0"
+
+deployment_dir: "/opt"
+kafka_log_dir: "/data/log-center/kafka"
+kafka_data_dir: "/data/var/kafka"
+broker_id: "0"
+
+run_user: "ppops"
+run_usergroup: "ppops"
+
+JAVA_HOME: "/usr/java/jdk"
+Xmx: "512M"
+Xms: "512M"
+zookeeper_servers: "192.168.88.1:2181,192.168.88.2:2181,192.168.88.1:2181/kafka"
+

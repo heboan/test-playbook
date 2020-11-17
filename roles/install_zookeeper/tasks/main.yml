@@ -1,0 +1,62 @@
+---
+
+- name: download and unarchive zookeeper pkg
+  unarchive:
+    src: "{{file_server}}/{{ zookeeper_pkg }}"
+    dest: "{{ deployment_dir }}"
+    remote_src: yes
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  become: yes
+  become_method: sudo
+
+
+- name: create zookeeper soft link
+  file:
+    src: "{{ deployment_dir }}/{{ zookeeper_version }}"
+    dest: "{{ deployment_dir }}/zookeeper"
+    state: link
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  become: yes
+  become_method: sudo
+
+
+- name: make sure zookeeper data and log directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+    mode: 0755
+  with_items:
+    - "{{ zookeeper_data_dir }}"
+    - "{{ zookeeper_log_dir }}"
+  become: yes
+  become_method: sudo
+
+
+- name: generate zoo.cfg and myid
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0644
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  with_items:
+    - {"src": "zoo.cfg", "dest": "{{ deployment_dir }}/zookeeper/conf/zoo.cfg"}
+    - {"src": "myid", "dest": "{{ zookeeper_data_dir }}/myid"}
+  become: yes
+  become_method: sudo
+
+
+- name: generate init.zookeeper.sh
+  template:
+    src: init.zookeeper.sh
+    dest: "{{ deployment_dir }}/zookeeper/init.zookeeper.sh"
+    mode: 0755
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  become: yes
+  become_method: sudo
+
