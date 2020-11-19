@@ -7,3 +7,7 @@
     - {"src": "nginx_conf_template", "dest": "{{ nginx_conf_dir }}/{{ domain }}.conf"}
   become: yes
   become_method: sudo
+
+
+- name: test nginx file
+  command: /opt/nginx/sbin/nginx -t
