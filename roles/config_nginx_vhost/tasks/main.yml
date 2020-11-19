@@ -10,7 +10,13 @@
 
 
 - name: test nginx file and reload  
-  command: /opt/nginx/sbin/nginx -t &&  /opt/nginx/sbin/nginx -s reload
+  command: /opt/nginx/sbin/nginx -t &&
+  become: yes
+  become_method: sudo
+
+
+- name: reload nginx service
+  command: /opt/nginx/sbin/nginx -s reload
   become: yes
   become_method: sudo
 
