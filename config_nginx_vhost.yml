@@ -1,0 +1,12 @@
+---
+
+- name: config_nginx_vhost
+  hosts: "{{ host_list }}"
+  gather_facts: False
+  roles:
+  - role: config_nginx_vhost
+
+#ansible-playbook -i hosts install_jdk.yml -e "host_list=singleNode|groupName" -k 指定机器或组执行
+#ansible-playbook -i hosts install_jdk.yml -k 所有节点执行
+##注意事项
+##1、执行ansible命令的用户在远程机必须能够免密sudo
