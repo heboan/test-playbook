@@ -9,7 +9,8 @@
   become_method: sudo
 
 
-- name: test nginx file
-  command: /opt/nginx/sbin/nginx -t
+- name: test nginx file and reload  
+  command: /opt/nginx/sbin/nginx -t &&  /opt/nginx/sbin/nginx -s reload
   become: yes
   become_method: sudo
+
