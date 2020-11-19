@@ -7,6 +7,14 @@
     - {"src": "nginx_conf_template", "dest": "{{ nginx_conf_dir }}/{{ domain }}.conf"}
   become: yes
   become_method: sudo
+  when: type == "change"
+
+
+- name: move {{ domain }}.conf
+  command: mv {{ nginx_conf_dir }}/{{ domain }}.conf {{ nginx_conf_dir }}/{{ domain }}.conf_bak
+  when: type == "delete"
+  become: yes
+  become_method: sudo
 
 
 - name: test nginx file and reload  
