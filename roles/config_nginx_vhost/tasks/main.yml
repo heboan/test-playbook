@@ -11,7 +11,7 @@
 
 
 - name: move {{ domain }}.conf
-  command: mv {{ nginx_conf_dir }}/{{ domain }}.conf {{ nginx_conf_dir }}/{{ domain }}.conf_bak
+  command: mv {{ nginx_conf_dir }}/{{ domain }}.conf {{ nginx_conf_dir }}/{{ domain }}.conf_delete
   when: type == "delete"
   become: yes
   become_method: sudo
