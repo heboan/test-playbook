@@ -1,0 +1,43 @@
+---
+
+- name: make sure datanode exists
+  file:
+    path: "{{ item.value }}"
+    state: directory
+    owner: "{{ fs_owner }}"
+    group: "{{ fs_onwer }}"
+    mode: 0755
+  with_dict: "{{ disks }}"
+  become: yes
+  become_method: sudo
+
+
+- name: umount datanode disks
+  mount:
+    path: "{{ item.value }}"
+    state: absent
+  with_dict: "{{ disks }}"
+  become: yes
+  become_method: sudo
+  
+
+- name: format datanode disks
+  filesystem: 
+    fstype: xfs
+    dev: "{{ item.key }}"
+    force: true
+  with_dict: "{{ disks }}"
+  become: yes
+  become_method: sudo
+
+
+- name: mount datanode disks
+  mount:
+    path: "{{ item.value }}"
+    src: "{{ item.key }}"
+    fstype: xfs
+    opts: "defaults,noatime,nobarrier"
+    state: mounted
+  with_dict: "{{ disks }}"
+  become: yes
+  become_method: sudo

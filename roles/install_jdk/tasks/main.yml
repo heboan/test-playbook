@@ -33,7 +33,7 @@
 - name: create jdk link
   file:
     src: "/usr/java/{{ jdk_version }}"
-    dest: /usr/java/jdk
+    dest: /usr/java/default
     state: link
   when: jdk_type == "tgz"
   become: yes

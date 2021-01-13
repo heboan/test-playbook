@@ -1,0 +1,7 @@
+---
+
+run_user: "ppops"
+run_usergroup: "ppops"
+
+supervisord_dir: /opt/supervisord
+

@@ -1,0 +1,10 @@
+---
+
+disks:
+  /dev/sdb: /data1
+#  /dev/sdc: /data2
+
+# 挂载目录的属主/组
+fs_owner: root
+fs_onwer: root
+

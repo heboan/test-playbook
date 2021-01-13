@@ -1,0 +1,61 @@
+- name: install supervisord
+  pip:
+    name: supervisor
+    version: 3.3.3
+    state: present
+  become: yes
+  become_method: sudo
+
+- name: mkdir dp supervisord base directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  with_items:
+    - "{{ supervisord_dir }}"
+  become: yes
+  become_method: sudo
+
+- name: copy defalut supervisor config
+  template:
+    src: "supervisord.conf"
+    dest: "{{ supervisord_dir }}/supervisord.conf"
+    mode: 0644
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  become: yes
+  become_method: sudo
+
+- name: mkdir supervisord conf.d and logs
+  file:
+    path: "{{ supervisord_dir }}/{{ item }}"
+    state: directory
+    mode: 0755
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  with_items:
+    - "conf.d"
+    - "logs"
+  become: yes
+  become_method: sudo
+
+
+- name: copy supervisor.service
+  template:
+    src: supervisor.service
+    dest: /lib/systemd/system/supervisor.service
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+    mode: '0644'
+  become: yes
+  become_method: sudo
+
+- name: enable supervisor.service
+  service:
+    name: supervisor.service
+    enabled: yes
+  become: yes
+  become_method: sudo
+
