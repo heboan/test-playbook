@@ -1,0 +1,48 @@
+---
+
+- name: download and unarchive pushgateway pkg
+  unarchive:
+    src: "{{file_server}}/{{ pushgateway_pkg }}"
+    dest: "{{ deployment_dir }}"
+    remote_src: yes
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  become: yes
+  become_method: sudo
+
+
+- name: create pushgateway soft link
+  file:
+    src: "{{ deployment_dir }}/{{ pushgateway_version }}"
+    dest: "{{ deployment_dir }}/pushgateway"
+    state: link
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  become: yes
+  become_method: sudo
+
+
+- name: make sure pushgateway  log directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+    mode: 0755
+  with_items:
+    - "{{ pushgateway_log_dir }}"
+  become: yes
+  become_method: sudo
+
+
+- name: generate init.pushgateway.sh
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0755
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  with_items:
+    - {"src": "init.pushgateway.sh", "dest": "{{ deployment_dir }}/pushgateway/init.pushgateway.sh"}
+  become: yes
+  become_method: sudo
