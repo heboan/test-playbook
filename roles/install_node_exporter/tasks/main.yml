@@ -1,0 +1,48 @@
+---
+
+- name: download and unarchive node_exporter pkg
+  unarchive:
+    src: "{{file_server}}/{{ node_exporter_pkg }}"
+    dest: "{{ deployment_dir }}"
+    remote_src: yes
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  become: yes
+  become_method: sudo
+
+
+- name: create node_exporter soft link
+  file:
+    src: "{{ deployment_dir }}/{{ node_exporter_version }}"
+    dest: "{{ deployment_dir }}/node_exporter"
+    state: link
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  become: yes
+  become_method: sudo
+
+
+- name: make sure node_exporter log directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+    mode: 0755
+  with_items:
+    - "{{ node_exporter_log_dir }}"
+  become: yes
+  become_method: sudo
+
+
+- name: generate init.node_exporter.sh
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0755
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  with_items:
+    - {"src": "init.node_exporter.sh", "dest": "{{ deployment_dir }}/node_exporter/init.node_exporter.sh"}
+  become: yes
+  become_method: sudo

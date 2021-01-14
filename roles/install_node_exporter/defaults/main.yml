@@ -1,0 +1,11 @@
+---
+
+file_server: "http://192.168.88.1:8000"
+node_exporter_pkg: "node_exporter-1.0.1.linux-amd64.tar.gz"
+node_exporter_version: "node_exporter-1.0.1.linux-amd64"
+
+deployment_dir: "/opt"
+node_exporter_log_dir: "/data/log-center/node_exporter"
+
+run_user: "ppops"
+run_usergroup: "ppops"

@@ -10,4 +10,4 @@
 #ansible-playbook -i hosts install_node_exporter.yml -e "host_list=192.168.88.1" -k
 ##注意事项
 ##1、执行ansible命令的用户在远程机必须能够免密sudo
-##2、执行之前根据实际需求更改role/install_node_exporter/defaults/main.yml 或传参
+##2、执行之前根据实际需求更改role/install_node_exporter/defaults/main.yml或传参
