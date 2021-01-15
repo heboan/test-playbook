@@ -1,0 +1,12 @@
+---
+
+file_server: "http://192.168.88.1:8000"
+alertmanager_pkg: "alertmanager-0.21.0.linux-amd64.tar.gz"
+alertmanager_version: "alertmanager-0.21.0.linux-amd64"
+
+deployment_dir: "/opt"
+alertmanager_log_dir: "/data/log-center/alertmanager"
+
+run_user: "ppops"
+run_usergroup: "ppops"
+

@@ -1,0 +1,48 @@
+---
+
+- name: download and unarchive alertmanager pkg
+  unarchive:
+    src: "{{file_server}}/{{ alertmanager_pkg }}"
+    dest: "{{ deployment_dir }}"
+    remote_src: yes
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  become: yes
+  become_method: sudo
+
+
+- name: create alertmanager soft link
+  file:
+    src: "{{ deployment_dir }}/{{ alertmanager_version }}"
+    dest: "{{ deployment_dir }}/alertmanager"
+    state: link
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  become: yes
+  become_method: sudo
+
+
+- name: make sure alertmanager  log directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+    mode: 0755
+  with_items:
+    - "{{ alertmanager_log_dir }}"
+  become: yes
+  become_method: sudo
+
+
+- name: generate init.alertmanager.sh
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0755
+    owner: "{{ run_user }}"
+    group: "{{ run_usergroup }}"
+  with_items:
+    - {"src": "init.alertmanager.sh", "dest": "{{ deployment_dir }}/alertmanager/init.alertmanager.sh"}
+  become: yes
+  become_method: sudo
