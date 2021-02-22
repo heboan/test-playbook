@@ -51,7 +51,7 @@ wait_pid_exit() {
 
 
 do_start() {
-    su ppops -s /bin/sh -c "$DAEMON  >$NODEEXPORTER_LOG_DIR/$NAME.log 2>&1 &"
+    su {{ run_user }} -s /bin/sh -c "$DAEMON  >$NODEEXPORTER_LOG_DIR/$NAME.log 2>&1 &"
     sleep 1
     is_running && return 0
     return 1
