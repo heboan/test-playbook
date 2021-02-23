@@ -1,14 +1,14 @@
 #!/bin/sh
-# alertmanager init script
+# blackbox_exporter init script
 #
 # heboan@qq.com 2020-11-10
 
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-NAME=alertmanager
+NAME=blackbox_exporter
 
 RTDIR=`cd $(dirname $0);pwd`
-DAEMON=$RTDIR/alertmanager
+DAEMON=$RTDIR/blackbox_exporter
 ALERTMANAGER_LOG_DIR={{ alertmanager_log_dir }}
 
 
@@ -51,7 +51,7 @@ wait_pid_exit() {
 
 
 do_start() {
-    su {{ run_user }} -s /bin/sh -c "$DAEMON  >$ALERTMANAGER_LOG_DIR/$NAME.log 2>&1 &"
+    su {{ run_user }} -s /bin/sh -c "$DAEMON --config.file=$RTDIR/blackbox.yml  >$ALERTMANAGER_LOG_DIR/$NAME.log 2>&1 &"
     sleep 1
     is_running && return 0
     return 1
