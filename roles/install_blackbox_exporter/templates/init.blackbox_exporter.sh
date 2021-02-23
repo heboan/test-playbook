@@ -9,13 +9,10 @@ NAME=blackbox_exporter
 
 RTDIR=`cd $(dirname $0);pwd`
 DAEMON=$RTDIR/blackbox_exporter
-ALERTMANAGER_LOG_DIR={{ alertmanager_log_dir }}
-
+ALERTMANAGER_LOG_DIR={{ log_dir }}
 
 test -x $DAEMON || exit 0
 ulimit -n 65535
-
-
 
 get_daemon_pid() {
     pid=0
