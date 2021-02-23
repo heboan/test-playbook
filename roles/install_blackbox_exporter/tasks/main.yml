@@ -1,8 +1,8 @@
 ---
 
-- name: download and unarchive alertmanager pkg
+- name: download and unarchive blackbox_exporter pkg
   unarchive:
-    src: "{{file_server}}/{{ alertmanager_pkg }}"
+    src: "{{file_server}}/{{ blackbox_exporter_pkg }}"
     dest: "{{ deployment_dir }}"
     remote_src: yes
     owner: "{{ run_user }}"
@@ -11,10 +11,10 @@
   become_method: sudo
 
 
-- name: create alertmanager soft link
+- name: create blackbox_exporter soft link
   file:
-    src: "{{ deployment_dir }}/{{ alertmanager_version }}"
-    dest: "{{ deployment_dir }}/alertmanager"
+    src: "{{ deployment_dir }}/{{ blackbox_exporter_version }}"
+    dest: "{{ deployment_dir }}/blackbox_exporter"
     state: link
     owner: "{{ run_user }}"
     group: "{{ run_usergroup }}"
@@ -22,7 +22,7 @@
   become_method: sudo
 
 
-- name: make sure alertmanager  log directory
+- name: make sure blackbox_exporter  log directory
   file:
     path: "{{ item }}"
     state: directory
@@ -30,12 +30,12 @@
     group: "{{ run_usergroup }}"
     mode: 0755
   with_items:
-    - "{{ alertmanager_log_dir }}"
+    - "{{ blackbox_exporter_log_dir }}"
   become: yes
   become_method: sudo
 
 
-- name: generate init.alertmanager.sh
+- name: generate init.blackbox_exporter.sh
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -43,6 +43,6 @@
     owner: "{{ run_user }}"
     group: "{{ run_usergroup }}"
   with_items:
-    - {"src": "init.alertmanager.sh", "dest": "{{ deployment_dir }}/alertmanager/init.alertmanager.sh"}
+    - {"src": "init.blackbox_exporter.sh", "dest": "{{ deployment_dir }}/blackbox_exporter/init.blackbox_exporter.sh"}
   become: yes
   become_method: sudo
