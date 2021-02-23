@@ -1,8 +1,8 @@
 ---
 
-- name: download and unarchive blackbox_exporter pkg
+- name: download and unarchive pkg
   unarchive:
-    src: "{{file_server}}/{{ blackbox_exporter_pkg }}"
+    src: "{{file_server}}/{{ pkg }}"
     dest: "{{ deployment_dir }}"
     remote_src: yes
     owner: "{{ run_user }}"
@@ -11,9 +11,9 @@
   become_method: sudo
 
 
-- name: create blackbox_exporter soft link
+- name: create soft link
   file:
-    src: "{{ deployment_dir }}/{{ blackbox_exporter_version }}"
+    src: "{{ deployment_dir }}/{{ pkg_version }}"
     dest: "{{ deployment_dir }}/blackbox_exporter"
     state: link
     owner: "{{ run_user }}"
@@ -22,7 +22,7 @@
   become_method: sudo
 
 
-- name: make sure blackbox_exporter  log directory
+- name: make sure log directory
   file:
     path: "{{ item }}"
     state: directory
@@ -30,12 +30,12 @@
     group: "{{ run_usergroup }}"
     mode: 0755
   with_items:
-    - "{{ blackbox_exporter_log_dir }}"
+    - "{{ log_dir }}"
   become: yes
   become_method: sudo
 
 
-- name: generate init.blackbox_exporter.sh
+- name: generate service script
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
