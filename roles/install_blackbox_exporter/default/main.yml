@@ -1,0 +1,11 @@
+---
+
+file_server: "http://192.168.88.1:8000"
+alertmanager_pkg: "blackbox_exporter-0.18.0.linux-amd64.tar.gz"
+alertmanager_version: "blackbox_exporter-0.18.0.linux-amd64"
+
+deployment_dir: "/opt"
+alertmanager_log_dir: "/data/log-center/blackbox_exporter"
+
+run_user: "ppops"
+run_usergroup: "ppops"
